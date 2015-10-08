@@ -121,8 +121,7 @@
         $dropdown.find("dt a").html(text);
 
         if (hide) {
-          // Temporary commented out
-          // $dropdown.find("dd ul").hide();
+          $dropdown.find("dd ul").hide();
         } else {
           scrollToElement($li);
         }

@@ -55,23 +55,32 @@
 
         $dropdown
           .append(
-            '<dt><a href="#">' + $selected.text() + '<span class="caret"></span>' +
-            '<span class="value">' + $selected.val() +
-            '</span></a></dt>'
-          )
+          '<dt><a href="#">' + $selected.text() + '<span class="caret"></span>' +
+          '<span class="value">' + $selected.val() +
+          '</span></a></dt>'
+        )
           .append('<dd><ul class="content"></ul></dd>');
 
         var $dropdown_content = $dropdown.find('.content');
 
+
         $options.each(function(){
-          $dropdown_content.append('<li><a href="#">' +
+          var $option = $('<li><a href="#">' +
             $(this).text() + '<span class="value">' +
             $(this).val() + '</span></a></li>');
+
+          if ($(this).val() == $selected.val()) {
+            $option.addClass('focused');
+          }
+
+          $dropdown_content.append($option);
         });
 
         $source.hide().after($dropdown);
 
         self.attachEvents($dropdown, $source);
+
+        $dropdown.find('.focused a').trigger('select');
       });
 
     },
@@ -86,7 +95,7 @@
 
           // hide options from any dropdown not being clicked
           $('.dropdown').not($dropdown).find('dd ul').hide();
-      });
+        });
     },
 
     attachEvents: function($dropdown, $source) {
@@ -97,7 +106,7 @@
 
       });
 
-      $dropdown.on('click', 'dd ul li a', function(event) {
+      $dropdown.on('click select', 'dd ul li a', function(event) {
         event.preventDefault();
         selectOption($(this));
       });

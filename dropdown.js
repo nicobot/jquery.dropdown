@@ -136,7 +136,10 @@
         }
 
         var new_val = $element.find("span.value").html();
-        $source.val(new_val).trigger('change');
+
+        if ($source.val() != new_val) {
+          $source.val(new_val).trigger('change');
+        }
       };
 
       /**

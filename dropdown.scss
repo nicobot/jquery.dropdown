@@ -1,0 +1,12 @@
+@import "_dropdown.scss";
+
+.dropdown {
+  @include dropdown(
+    $link-color: #FFF,
+    $link-color-hover: mix(#FFF, #000, 20%),
+    $option-color: #C5C0B0,
+    $option-bg: #009086,
+    $bgcolor: #009086,
+    $border: #d4ca9a
+  );
+}

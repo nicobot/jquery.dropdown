@@ -1,0 +1,93 @@
+// Use altogether with JS library
+@mixin dropdown($link-color: #816c5b, $link-color-hover: #5d4617, $option-color: #C5C0B0, $option-bg: #5d4617, $bgcolor: #e4dfcb, $border: #d4ca9a) {
+  text-align: left;
+
+  dd,
+  dt,
+  ul {
+    margin: 0;
+    padding: 0;
+  }
+
+  dd {
+    position: relative;
+  }
+
+  a,
+  a:visited {
+    color: $link-color;
+    text-decoration: none;
+    outline: none;
+    white-space: nowrap;
+  }
+
+  a:hover {
+    color: $link-color-hover;
+  }
+
+  dt a {
+    position: relative;
+
+    &:hover {
+      color: $link-color-hover;
+      border: 2px solid $border;
+    }
+
+    background: $option-bg;
+    display: block;
+    border: 2px solid $border;
+    padding: 5px 30px 5px 5px;
+    min-width: 160px;
+
+    span {
+      cursor: pointer;
+      display: block;
+
+      &.caret {
+        position: absolute;
+        top: 12px;
+        right: 11px;
+        display: inline-block;
+        @include bg-build('icon-select.png');
+        width: 7px !important;
+      }
+    }
+
+  }
+
+  dd ul {
+    background: tint($bgcolor, 20%);
+    border: 1px solid $border;
+    color: $option-color;
+    display: none;
+    left: 0;
+    padding: 5px 0;
+    position: absolute;
+    z-index: 1;
+    top: 2px;
+    width: auto;
+    min-width: 170px;
+    list-style: none;
+
+    li a {
+      padding: 5px;
+      display: block;
+    }
+
+    li a:hover,
+    li.hover {
+      color: #FFF;
+      background-color: $option-bg;
+    }
+  }
+
+  &.orientation-right dd ul {
+    right: 0;
+    left: auto;
+  }
+
+  span.value {
+    display: none;
+  }
+
+}

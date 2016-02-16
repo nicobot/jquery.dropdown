@@ -73,3 +73,8 @@
     left: auto; }
   .dropdown span.value {
     display: none; }
+
+.dropdown li.hover {
+  background-color: #009086;
+  color: #FFF;
+}

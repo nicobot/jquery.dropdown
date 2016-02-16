@@ -1,0 +1,17 @@
+.test,
+.compare {
+	width: 50%;
+}
+
+.test-select {
+	clear: both;
+}
+
+dl,
+select,
+dl + .value,
+select + .value {
+	width: 45%;
+	float: left;
+	margin: 15px 0;
+}

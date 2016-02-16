@@ -85,8 +85,15 @@
 
     },
 
-    attachGlobalEvents: function() {
+    closeDropdowns: function($dropdowns) {
+      $dropdowns.find('dd ul').hide();
+      $dropdowns.find('li.hover').removeClass('hover');
+    },
 
+    attachGlobalEvents: function() {
+      
+      var self = this;
+      
       $(document).off('click.' + pluginName)
         .on('click.' + pluginName, function(e) {
 
@@ -94,16 +101,19 @@
           var $dropdown = $clicked.closest('.dropdown');
 
           // hide options from any dropdown not being clicked
-          $('.dropdown').not($dropdown).find('dd ul').hide();
+          var $dropdowns = $('.dropdown').not($dropdown);
+          
+          self.closeDropdowns($dropdowns);
         });
     },
 
     attachEvents: function($dropdown, $source) {
-
+      
+      var self = this;
+      
       $dropdown.on('click', 'dt a', function(event) {
         event.preventDefault();
         $dropdown.find("dd ul").toggle();
-
       });
 
       $dropdown.on('click select', 'dd ul li a', function(event) {
@@ -124,7 +134,7 @@
         }
 
         var $li = $element.parent();
-        $li.parent().find('> .focused').removeClass('focused');
+        $li.parent().find('> .focused, > .hover').removeClass('focused').removeClass('hover');
         $li.addClass('focused');
 
         $dropdown.find("dt a").html(text);
@@ -140,6 +150,15 @@
         if ($source.val() != new_val) {
           $source.val(new_val).trigger('change');
         }
+      };
+
+      var hoverOption = function($element) {
+
+        var $li = $element.parent();
+        $li.parent().find('> .hover').removeClass('hover');
+        $li.addClass('hover');
+        scrollToElement($li);
+
       };
 
       /**
@@ -179,32 +198,96 @@
       // Catch keypressed keys to navigate between options
       $dropdown.on('keyup', function(key) {
 
-        if (key.keyCode !== 0 && key.keyCode !== 13) {
-          var char = String.fromCharCode(key.keyCode);
-          var $focused = $dropdown.find(".content li.focused");
+        if (key.keyCode !== 0) {
+          if ($dropdown.find(".content li").length == 0) {
+            return;
+          }
+          
+          var code = key.keyCode;
 
-          var next_anchors = [];
-          if ($focused.length) {
-            next_anchors = $dropdown.find(".content li.focused").nextAll();
+          if ((code == 38 || code == 40) && !$dropdown.find("dd ul").is(':visible'))  {
+            $dropdown.find("dd ul").toggle();          
+            return;
+          } 
+
+          if (code == 27 && $dropdown.find("dd ul").is(':visible')) {
+            self.closeDropdowns($dropdown);
+            return;
           }
 
-          var all_anchors = $dropdown.find(".content li");
-          all_anchors = all_anchors.not(next_anchors);
-          $.merge(next_anchors, all_anchors);
+          var $hover = $dropdown.find(".content li.hover");
 
-
-          var found_option = false;
-          $(next_anchors).each(function() {
-            var $this = $(this);
-            if ($this.text()[0].toLowerCase() == char.toLowerCase()) {
-              found_option = $this;
-              return false;
+          if ($hover.length == 0) {
+            var $hover = $dropdown.find(".content li.focused");                
+            if ($hover.length == 0) {
+              var $hover = $dropdown.find(".content li:first");
             }
-          });
-
-          if (found_option) {
-            selectOption(found_option.find('a'), false);
           }
+
+          switch (key.keyCode) {
+            case 38:
+              // UP
+              var $li;
+              
+              $li = $hover.prev();
+              if ($li.length == 0) {
+                $li = $dropdown.find(".content li:last");
+              }
+              
+              if ($li.length) {
+                hoverOption($li.find('a'));
+              }
+
+              break;
+
+            case 40:
+              // DOWN:
+              var $li;
+
+              $li = $hover.next();
+              if ($li.length == 0) {
+                $li = $dropdown.find(".content li:first");
+              }                
+
+              if ($li.length) {
+                hoverOption($li.find('a'));
+              }
+
+              break;
+
+            case 13: 
+              // ENTER
+              selectOption($hover.find('a'));
+
+              break;
+
+            default:
+              var char = String.fromCharCode(key.keyCode);
+              var $focused = $dropdown.find(".content li.focused");
+
+              var next_anchors = [];
+              if ($focused.length) {
+                next_anchors = $dropdown.find(".content li.focused").nextAll();
+              }
+
+              var all_anchors = $dropdown.find(".content li");
+              all_anchors = all_anchors.not(next_anchors);
+              $.merge(next_anchors, all_anchors);
+
+              var found_option = false;
+              $(next_anchors).each(function() {
+                var $this = $(this);
+                if ($this.text()[0].toLowerCase() == char.toLowerCase()) {
+                  found_option = $this;
+                  return false;
+                }
+              });
+
+              if (found_option) {
+                hoverOption(found_option.find('a'));
+              }            
+          } 
+
         }
       });
     }

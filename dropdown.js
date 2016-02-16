@@ -55,7 +55,7 @@
 
         $dropdown
           .append(
-          '<dt><a href="#">' + $selected.text() + '<span class="caret"></span>' +
+          '<dt><a href="#" tabindex="-1">' + $selected.text() + '<span class="caret"></span>' +
           '<span class="value">' + $selected.val() +
           '</span></a></dt>'
         )
@@ -119,6 +119,11 @@
       $dropdown.on('click select', 'dd ul li a', function(event) {
         event.preventDefault();
         selectOption($(this));
+      });
+
+      $dropdown.on('mouseenter', 'dd li', function(event) {
+        $dropdown.find("li.hover").removeClass('hover');
+        $(event.target).parent().addClass('hover');
       });
 
       /**
@@ -263,12 +268,9 @@
 
             default:
               var char = String.fromCharCode(key.keyCode);
-              var $focused = $dropdown.find(".content li.focused");
 
               var next_anchors = [];
-              if ($focused.length) {
-                next_anchors = $dropdown.find(".content li.focused").nextAll();
-              }
+              next_anchors = $hover.nextAll();
 
               var all_anchors = $dropdown.find(".content li");
               all_anchors = all_anchors.not(next_anchors);

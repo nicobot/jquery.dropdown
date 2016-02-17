@@ -55,10 +55,10 @@
 
         $dropdown
           .append(
-          '<dt><a href="#" tabindex="-1">' + $selected.text() + '<span class="caret"></span>' +
-          '<span class="value">' + $selected.val() +
-          '</span></a></dt>'
-        )
+            '<dt><a href="#" tabindex="-1">' + $selected.text() + '<span class="caret"></span>' +
+            '<span class="value">' + $selected.val() +
+            '</span></a></dt>'
+          )
           .append('<dd><ul class="content"></ul></dd>');
 
         var $dropdown_content = $dropdown.find('.content');
@@ -91,9 +91,9 @@
     },
 
     attachGlobalEvents: function() {
-      
+
       var self = this;
-      
+
       $(document).off('click.' + pluginName)
         .on('click.' + pluginName, function(e) {
 
@@ -102,15 +102,15 @@
 
           // hide options from any dropdown not being clicked
           var $dropdowns = $('.dropdown').not($dropdown);
-          
+
           self.closeDropdowns($dropdowns);
         });
     },
 
     attachEvents: function($dropdown, $source) {
-      
+
       var self = this;
-      
+
       $dropdown.on('click', 'dt a', function(event) {
         event.preventDefault();
         $dropdown.find("dd ul").toggle();
@@ -157,6 +157,10 @@
         }
       };
 
+      /**
+       * Makes hover on an option
+       * @param $element
+       */
       var hoverOption = function($element) {
 
         var $li = $element.parent();
@@ -201,19 +205,23 @@
       };
 
       // Catch keypressed keys to navigate between options
-      $dropdown.on('keyup', function(key) {
+      $dropdown.on('keydown', function(event) {
 
-        if (key.keyCode !== 0) {
+        var code = event.keyCode;
+
+        if (code !== 0) {
           if ($dropdown.find(".content li").length == 0) {
             return;
           }
-          
-          var code = key.keyCode;
 
-          if ((code == 38 || code == 40) && !$dropdown.find("dd ul").is(':visible'))  {
-            $dropdown.find("dd ul").toggle();          
-            return;
-          } 
+          if (code == 38 || code == 40) {
+            event.preventDefault();
+
+            if (!$dropdown.find("dd ul").is(':visible'))  {
+              $dropdown.find("dd ul").toggle();
+              return;
+            }
+          }
 
           if (code == 27 && $dropdown.find("dd ul").is(':visible')) {
             self.closeDropdowns($dropdown);
@@ -223,22 +231,22 @@
           var $hover = $dropdown.find(".content li.hover");
 
           if ($hover.length == 0) {
-            var $hover = $dropdown.find(".content li.focused");                
+            var $hover = $dropdown.find(".content li.focused");
             if ($hover.length == 0) {
               var $hover = $dropdown.find(".content li:first");
             }
           }
 
-          switch (key.keyCode) {
+          switch (code) {
             case 38:
               // UP
               var $li;
-              
+
               $li = $hover.prev();
               if ($li.length == 0) {
                 $li = $dropdown.find(".content li:last");
               }
-              
+
               if ($li.length) {
                 hoverOption($li.find('a'));
               }
@@ -252,7 +260,7 @@
               $li = $hover.next();
               if ($li.length == 0) {
                 $li = $dropdown.find(".content li:first");
-              }                
+              }
 
               if ($li.length) {
                 hoverOption($li.find('a'));
@@ -260,14 +268,14 @@
 
               break;
 
-            case 13: 
+            case 13:
               // ENTER
               selectOption($hover.find('a'));
 
               break;
 
             default:
-              var char = String.fromCharCode(key.keyCode);
+              var char = String.fromCharCode(code);
 
               var next_anchors = [];
               next_anchors = $hover.nextAll();
@@ -287,8 +295,8 @@
 
               if (found_option) {
                 hoverOption(found_option.find('a'));
-              }            
-          } 
+              }
+          }
 
         }
       });

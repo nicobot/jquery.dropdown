@@ -1,5 +1,15 @@
 // Use altogether with JS library
-@mixin dropdown($link-color: #816c5b, $link-color-hover: #5d4617, $option-color: #C5C0B0, $option-bg: #5d4617, $bgcolor: #e4dfcb, $border: #d4ca9a) {
+@mixin dropdown(
+  $link-color: #816c5b,
+  $link-color-hover: #5d4617,
+  $option-color: #C5C0B0,
+  $option-bg: #5d4617,
+  $bgcolor: #e4dfcb,
+  $border: #d4ca9a,
+  $focus-color: $link-color,
+  $focus-bg: $link-color-hover,
+  $hover-bg: $link-color-hover) {
+
   text-align: left;
 
   dd,
@@ -75,9 +85,14 @@
     }
 
     li a:hover,
-    li.hover {
-      color: #FFF;
-      background-color: $option-bg;
+    li.hover a {
+      color: $link-color-hover;
+      background-color: $hover-bg;
+    }
+
+    li.focused a {
+      color: $focus-color;
+      background-color: $focus-bg;
     }
   }
 
